@@ -6,7 +6,6 @@ import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -14,7 +13,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Service
 public class UserTest {
@@ -22,7 +20,7 @@ public class UserTest {
     private Set<ConstraintViolation<User>> violations;
     private User user;
 
-    private UserTest(){
+    private UserTest() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 
@@ -36,28 +34,28 @@ public class UserTest {
     }
 
     @Test
-    public void emailFieldCannotBeEmpty(){
+    public void emailFieldCannotBeEmpty() {
         user.setEmail(" ");
         violations = validator.validate(user);
         assertEquals(2, violations.size());
     }
 
     @Test
-    public void emailFieldCannotBeNull(){
+    public void emailFieldCannotBeNull() {
         user.setEmail(null);
         violations = validator.validate(user);
         assertEquals(1, violations.size());
     }
 
     @Test
-    public void birthdayFieldCannotBeFuture(){
+    public void birthdayFieldCannotBeFuture() {
         user.setBirthday(LocalDate.now());
         violations = validator.validate(user);
         assertEquals(1, violations.size());
     }
 
     @Test
-    public void logginFieldCannotBeNull(){
+    public void logginFieldCannotBeNull() {
         user.setLogin(null);
         violations = validator.validate(user);
         assertEquals(1, violations.size());
