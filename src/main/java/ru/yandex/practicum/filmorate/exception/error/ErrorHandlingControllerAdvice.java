@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.exception.dto;
+package ru.yandex.practicum.filmorate.exception.error;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;

@@ -5,12 +5,15 @@ import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.validation.CreateGroup;
+import ru.yandex.practicum.filmorate.validation.UpdateGroup;
 
 import java.time.LocalDate;
 
 @Data
 public class Film {
-    @Null(message = "Поле id - должно быть пустым при создании.")
+    @Null(message = "Поле id - должно быть пустым при создании.", groups = CreateGroup.class)
+    @NotBlank(message = "Поле id - не должно быть пустым при обновлении.", groups = UpdateGroup.class)
     private Long id;
     @NotBlank(message = "name(название фильма) - не может быть пустым.")
     private String name;
