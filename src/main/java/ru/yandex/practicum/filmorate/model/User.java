@@ -6,6 +6,9 @@ import ru.yandex.practicum.filmorate.validation.CreateGroup;
 import ru.yandex.practicum.filmorate.validation.UpdateGroup;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Data
 public class User {
@@ -20,4 +23,17 @@ public class User {
     private String name;
     @Past(message = "Дата рождения не может быть в будущем.")
     private LocalDate birthday;
+    private Set<Long> friends = new TreeSet<>();
+
+    public void addFrend(Long id) {
+        friends.add(id);
+    }
+
+    public Set<Long> getFriends() {
+        return Collections.unmodifiableSet(friends);
+    }
+
+    public void deleteFriend(Long friendId) {
+        friends.remove(friendId);
+    }
 }

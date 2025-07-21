@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
@@ -14,6 +15,7 @@ import java.util.Collection;
 public class UserController {
     private final UserService userService;
 
+    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -21,18 +23,47 @@ public class UserController {
     // Возвращает всех пользователей
     @GetMapping
     public Collection<User> getUsers() {
-        return userService.findAll();
+        return userService.userStorage.findAll();
+    }
+
+    @GetMapping("/{userId}")
+    public User getUserById(@PathVariable Long userId) {
+        return userService.userStorage.getUserById(userId);
     }
 
     // Создает нового пользователя
     @PostMapping
     public User postUser(@Valid @RequestBody User user) {
-        return userService.create(user);
+        return userService.userStorage.create(user);
     }
 
     // Обновляет уже существующего пользователя
     @PutMapping
     public User putUser(@Valid @RequestBody User newUser) {
-        return userService.update(newUser);
+        return userService.userStorage.update(newUser);
+    }
+
+    // Добавляет пользователя в друзья
+    @PutMapping("/{id}/friends/{friendId}")
+    public Collection<User> addFriend(@PathVariable("id") Long userId, @PathVariable Long friendId) {
+        return userService.addFriend(userId, friendId);
+    }
+
+    // Возвращаем список друзей пользователя
+    @GetMapping("/{id}/friends")
+    public Collection<User> getFriendsUser(@PathVariable Long id) {
+        return userService.findAllFriends(id);
+    }
+
+    // Удаляем пользователя из друзей
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public String deleteFriends(@PathVariable("id") Long userId, @PathVariable Long friendId) {
+        return userService.deleteFriend(userId, friendId);
+    }
+
+    // Возвращаем список общих друзей пользователей
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Collection<User> getMutualFriends(@PathVariable("id") Long userId, @PathVariable Long otherId) {
+        return userService.userStorage.getMutualFriends(userId, otherId);
     }
 }
