@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 public class UserService {
-    public UserStorage userStorage;
+    private UserStorage userStorage;
 
     @Autowired
     public UserService(InMemoryUserStorage userStorage) {
@@ -21,7 +21,7 @@ public class UserService {
 
     //Тут мы возвращаем всех пользователей, которые являются друзьями переданного нам пользователя.
     // Перебираем весь список друзей и получаем по id объект User, после чего возвращаем List<User>
-    public Collection<User> findAllFriends(Long id) {
+    public List<User> findAllFriends(Long id) {
         User user = userStorage.getUserById(id);
 
         List<User> users = new ArrayList<>();
@@ -49,5 +49,25 @@ public class UserService {
         user.deleteFriend(friendId);
         friend.deleteFriend(userId);
         return "Пользователи с id - " + userId + " и " + friendId + " перестали дружить.";
+    }
+
+    public Collection<User> findAll() {
+        return userStorage.findAll();
+    }
+
+    public User getUserById(Long userId) {
+        return userStorage.getUserById(userId);
+    }
+
+    public User createUser(User user) {
+        return userStorage.create(user);
+    }
+
+    public User updateUser(User user) {
+        return userStorage.update(user);
+    }
+
+    public List<User> getMutualFriends(Long userId, Long otherId) {
+        return userStorage.getMutualFriends(userId, otherId);
     }
 }

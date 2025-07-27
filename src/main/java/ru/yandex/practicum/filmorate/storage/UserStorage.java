@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
+import java.util.List;
 
 //Интерфейс для работы с пользователями (добавление, удаление, модификация объектов)
 public interface UserStorage {
@@ -19,5 +20,7 @@ public interface UserStorage {
 
     User getUserById(Long userId);
 
-    Collection<User> getMutualFriends(Long userId, Long otherId);
+    List<User> getMutualFriends(Long userId, Long otherId);
+
+    void checkUserById(Long id);
 }

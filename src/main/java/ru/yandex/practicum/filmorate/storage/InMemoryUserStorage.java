@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -79,6 +80,13 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
+    public void checkUserById(Long id) {
+        if (!users.containsKey(id)) {
+            throw new NotFoundException("Некорректный id пользователя - " + id);
+        }
+    }
+
+    @Override
     public User getUserById(Long userId) {
         log.info("Начало выполнения метода поиска пользователя по id.");
         if (!users.containsKey(userId)) {
@@ -90,7 +98,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public Collection<User> getMutualFriends(Long userId, Long otherId) {
+    public List<User> getMutualFriends(Long userId, Long otherId) {
         User user = getUserById(userId);
         User otherUser = getUserById(otherId);
 

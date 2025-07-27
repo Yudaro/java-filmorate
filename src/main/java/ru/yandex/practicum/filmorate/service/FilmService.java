@@ -1,35 +1,58 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class FilmService {
-    public FilmStorage filmStorage;
-    private UserService userService;
+    private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
 
-    @Autowired
-    public FilmService(InMemoryFilmStorage filmStorage, UserService userService) {
+
+    public FilmService(InMemoryFilmStorage filmStorage, InMemoryUserStorage userStorage) {
         this.filmStorage = filmStorage;
-        this.userService = userService;
+        this.userStorage = userStorage;
     }
 
-    public Collection<Long> likeFilm(Long filmId, Long userId) {
+    public Set<Long> likeFilm(Long filmId, Long userId) {
         Film film = filmStorage.getFilmById(filmId);
-        userService.userStorage.getUserById(userId);
+        userStorage.checkUserById(userId);
         film.likeFilm(userId);
         return film.getLikes();
     }
 
-    public Collection<Long> deleteLikeFilm(Long filmId, Long userId) {
+    public Set<Long> deleteLikeFilm(Long filmId, Long userId) {
         Film film = filmStorage.getFilmById(filmId);
-        userService.userStorage.getUserById(userId);
+        userStorage.checkUserById(userId);
         film.deleteLike(userId);
         return film.getLikes();
+    }
+
+    public Collection<Film> findAll() {
+        return filmStorage.findAll();
+    }
+
+    public Film getFilmById(Long filmId) {
+        return filmStorage.getFilmById(filmId);
+    }
+
+    public Film createFilm(Film film) {
+        return filmStorage.create(film);
+    }
+
+    public Film updateFilm(Film film) {
+        return filmStorage.update(film);
+    }
+
+    public List<Film> getPopularFilms(int count) {
+        return filmStorage.getPopularFilms(count);
     }
 }

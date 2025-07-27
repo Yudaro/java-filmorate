@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.Collection;
+import java.util.List;
 
 @Validated
 @RestController
@@ -23,24 +24,24 @@ public class UserController {
     // Возвращает всех пользователей
     @GetMapping
     public Collection<User> getUsers() {
-        return userService.userStorage.findAll();
+        return userService.findAll();
     }
 
     @GetMapping("/{userId}")
     public User getUserById(@PathVariable Long userId) {
-        return userService.userStorage.getUserById(userId);
+        return userService.getUserById(userId);
     }
 
     // Создает нового пользователя
     @PostMapping
     public User postUser(@Valid @RequestBody User user) {
-        return userService.userStorage.create(user);
+        return userService.createUser(user);
     }
 
     // Обновляет уже существующего пользователя
     @PutMapping
     public User putUser(@Valid @RequestBody User newUser) {
-        return userService.userStorage.update(newUser);
+        return userService.updateUser(newUser);
     }
 
     // Добавляет пользователя в друзья
@@ -51,7 +52,7 @@ public class UserController {
 
     // Возвращаем список друзей пользователя
     @GetMapping("/{id}/friends")
-    public Collection<User> getFriendsUser(@PathVariable Long id) {
+    public List<User> getFriendsUser(@PathVariable Long id) {
         return userService.findAllFriends(id);
     }
 
@@ -63,7 +64,7 @@ public class UserController {
 
     // Возвращаем список общих друзей пользователей
     @GetMapping("/{id}/friends/common/{otherId}")
-    public Collection<User> getMutualFriends(@PathVariable("id") Long userId, @PathVariable Long otherId) {
-        return userService.userStorage.getMutualFriends(userId, otherId);
+    public List<User> getMutualFriends(@PathVariable("id") Long userId, @PathVariable Long otherId) {
+        return userService.getMutualFriends(userId, otherId);
     }
 }
