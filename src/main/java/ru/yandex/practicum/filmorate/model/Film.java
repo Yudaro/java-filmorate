@@ -9,6 +9,9 @@ import ru.yandex.practicum.filmorate.validation.CreateGroup;
 import ru.yandex.practicum.filmorate.validation.UpdateGroup;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class Film {
@@ -22,4 +25,17 @@ public class Film {
     private LocalDate releaseDate;
     @Positive(message = "duration(продолжительность фильма в минутых) - не может быть отрицательным или равна 0.")
     private Long duration;
+    private Set<Long> likes = new HashSet<>();
+
+    public void likeFilm(Long userId) {
+        likes.add(userId);
+    }
+
+    public void deleteLike(Long userId) {
+        likes.remove(userId);
+    }
+
+    public Set<Long> getLikes() {
+        return Collections.unmodifiableSet(likes);
+    }
 }
