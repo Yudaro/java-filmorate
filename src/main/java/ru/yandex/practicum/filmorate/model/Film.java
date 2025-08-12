@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.enums.Genre;
+import ru.yandex.practicum.filmorate.enums.Rating;
 import ru.yandex.practicum.filmorate.validation.CreateGroup;
 import ru.yandex.practicum.filmorate.validation.UpdateGroup;
 
@@ -26,6 +28,8 @@ public class Film {
     @Positive(message = "duration(продолжительность фильма в минутых) - не может быть отрицательным или равна 0.")
     private Long duration;
     private Set<Long> likes = new HashSet<>();
+    private Set<Genre> genres = new HashSet<>();
+    private Rating rating;
 
     public void likeFilm(Long userId) {
         likes.add(userId);
