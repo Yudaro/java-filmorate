@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.model;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.enums.StatusFriendRequest;
 import ru.yandex.practicum.filmorate.validation.CreateGroup;
 import ru.yandex.practicum.filmorate.validation.UpdateGroup;
 
@@ -25,7 +24,6 @@ public class User {
     @Past(message = "Дата рождения не может быть в будущем.")
     private LocalDate birthday;
     private Set<Long> friends = new TreeSet<>();
-    private StatusFriendRequest status;
 
     public void addFrend(Long id) {
         friends.add(id);
