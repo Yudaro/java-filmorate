@@ -186,16 +186,16 @@ public class DbUserStorage implements UserStorage {
 
     public List<User> getCommonFriends(Long userId, Long otherUserId) {
         String query = """
-        SELECT 
-            u.id, 
-            u.email, 
-            u.login, 
-            u.name, 
+        SELECT
+            u.id,
+            u.email,
+            u.login,
+            u.name,
             u.birthday,
         FROM users u
-        INNER JOIN friendship fs1 ON u.id = fs1.friend_id 
+        INNER JOIN friendship fs1 ON u.id = fs1.friend_id
         INNER JOIN friendship fs2 ON u.id = fs2.friend_id
-        WHERE fs1.user_id = ? 
+        WHERE fs1.user_id = ?
           AND fs2.user_id = ?
         ORDER BY u.id
         """;
@@ -209,15 +209,15 @@ public class DbUserStorage implements UserStorage {
 
     public List<User> getUsersFriends(long userId) {
         String query = """
-                SELECT 
-                    u.id, 
-                    u.email, 
-                    u.login, 
-                    u.name, 
+                SELECT
+                    u.id,
+                    u.email,
+                    u.login,
+                    u.name,
                     u.birthday
                 FROM users u
-                INNER JOIN friendship fs ON u.id = fs.friend_id 
-                WHERE fs.user_id = ?  
+                INNER JOIN friendship fs ON u.id = fs.friend_id
+                WHERE fs.user_id = ?
                 ORDER BY u.id
                 """;
 

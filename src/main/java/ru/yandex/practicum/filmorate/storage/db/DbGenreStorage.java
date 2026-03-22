@@ -48,7 +48,7 @@ public class DbGenreStorage {
                 FROM film_genre AS fg
                 JOIN genres AS g ON fg.genre_id = g.id
                 WHERE fg.film_id = ?
-                ORDER BY g.id  
+                ORDER BY g.id
                 """;
 
         List<Genre> genresList = jdbc.query(query, mapper, filmId);

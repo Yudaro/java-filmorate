@@ -96,7 +96,7 @@ public class DbFilmStorage implements FilmStorage {
 
     public Film getFilmById(Long id) {
         String query = """
-                SELECT 
+                SELECT
                     f.id          AS film_id,
                     f.name        AS film_name,
                     f.description,
@@ -112,7 +112,7 @@ public class DbFilmStorage implements FilmStorage {
                 LEFT JOIN film_genre fg ON fg.film_id = f.id
                 LEFT JOIN genres g ON fg.genre_id = g.id
                 WHERE f.id = ?
-                ORDER BY g.id; 
+                ORDER BY g.id;
                 """;
 
         return jdbc.query(query, rs -> {
