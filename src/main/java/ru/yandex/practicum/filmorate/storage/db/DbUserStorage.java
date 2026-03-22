@@ -186,7 +186,6 @@ public class DbUserStorage implements UserStorage {
 
     public List<User> getCommonFriends(Long userId, Long otherUserId) {
         String query = """
-        
                 SELECT
             u.id,
             u.email,
