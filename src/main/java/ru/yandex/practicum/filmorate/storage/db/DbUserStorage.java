@@ -31,20 +31,20 @@ public class DbUserStorage implements UserStorage {
 
     // Получаем из БД список всех пользователей
     public List<User> getAllUser() {
-        String query  = """
+        String query = """
                 SELECT u.id, u.email, u.login, u.name, u.birthday, fs.friend_id
                 FROM users as u
                 LEFT JOIN friendship as fs on u.id = fs.user_id
                 Order by u.id
                 """;
 
-        return jdbc.query(query, rs ->{
+        return jdbc.query(query, rs -> {
             List<User> users = new ArrayList<>();
 
             User currentUser = null;
             long lastUserId = -1;
 
-            while(rs.next()) {
+            while (rs.next()) {
                 long userId = rs.getLong("id");
 
                 if (userId != lastUserId) {
@@ -79,7 +79,7 @@ public class DbUserStorage implements UserStorage {
         try {
             return jdbc.query(query, rs -> {
                 User user = null;
-                while(rs.next()) {
+                while (rs.next()) {
                     if (user == null) {
                         user = new User();
                         user.setId(rs.getLong("id"));
@@ -96,7 +96,7 @@ public class DbUserStorage implements UserStorage {
                 }
                 return user;
             }, id);
-        } catch(EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("Пользователя с id - " + id + " не существует.");
         } catch (IncorrectResultSizeDataAccessException e) {
             throw new IllegalStateException("Найдено больше одной записи для id " + id);
@@ -120,7 +120,7 @@ public class DbUserStorage implements UserStorage {
 
         Long newId = keyHolder.getKeyAs(Long.class);
 
-        if(newId == null) {
+        if (newId == null) {
             throw new RuntimeException("Не удалось получить сгенерированный id");
         }
 
@@ -141,7 +141,7 @@ public class DbUserStorage implements UserStorage {
         int updateRows = jdbc.update(query, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId());
 
         if (updateRows == 0) {
-            throw new NotFoundException("Пользователь с id - " + user.getId() + " не найден." );
+            throw new NotFoundException("Пользователь с id - " + user.getId() + " не найден.");
         }
         return getUserById(user.getId());
     }
@@ -155,7 +155,7 @@ public class DbUserStorage implements UserStorage {
         int updateRows = jdbc.update(query, id);
 
         if (updateRows == 0) {
-            throw new ValidationException("Пользователь с id - " + id + " не найден." );
+            throw new ValidationException("Пользователь с id - " + id + " не найден.");
         }
     }
 
@@ -186,7 +186,8 @@ public class DbUserStorage implements UserStorage {
 
     public List<User> getCommonFriends(Long userId, Long otherUserId) {
         String query = """
-        SELECT
+        
+                SELECT
             u.id,
             u.email,
             u.login,

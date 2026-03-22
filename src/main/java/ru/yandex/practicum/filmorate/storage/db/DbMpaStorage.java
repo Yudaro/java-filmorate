@@ -38,10 +38,10 @@ public class DbMpaStorage {
                 WHERE id = ?
                 """;
 
-        try{
+        try {
             Mpa mpa = jdbc.queryForObject(query, mapper, id);
             return mpa;
-        } catch(EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException("MPA с id - " + id + " не существует.");
         }
     }
