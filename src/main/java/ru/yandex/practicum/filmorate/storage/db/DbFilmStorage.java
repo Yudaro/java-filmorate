@@ -35,7 +35,7 @@ public class DbFilmStorage implements FilmStorage {
 
     public List<Film> getAllFilms() {
         String query = """
-                SELECT 
+                SELECT
                     f.id          AS film_id,
                     f.name        AS film_name,
                     f.description,
@@ -49,19 +49,18 @@ public class DbFilmStorage implements FilmStorage {
                 LEFT JOIN mpa m ON f.mpa_id = m.id
                 LEFT JOIN film_genre fg ON fg.film_id = f.id
                 LEFT JOIN genres g ON fg.genre_id = g.id
-                ORDER BY f.id;  -- ЭТО КРИТИЧЕСКИ ВАЖНО!
+                ORDER BY f.id;
                 """;
 
         return jdbc.query(query, rs -> {
             List<Film> films = new ArrayList<>();
 
-            Film currentFilm = null;       // Запоминаем текущий фильм
-            long lastFilmId = -1;          // ID последнего обработанного фильма
+            Film currentFilm = null;
+            long lastFilmId = -1;
 
             while (rs.next()) {
                 long filmId = rs.getLong("film_id");
 
-                // Если ID изменился — значит, пошли новые фильмы
                 if (filmId != lastFilmId) {
                     currentFilm = new Film();
                     currentFilm.setId(filmId);
@@ -70,7 +69,6 @@ public class DbFilmStorage implements FilmStorage {
                     currentFilm.setReleaseDate(rs.getObject("release", LocalDate.class));
                     currentFilm.setDuration(rs.getLong("duration"));
 
-                    // MPA
                     long mpaId = rs.getLong("mpa_id");
                     if (!rs.wasNull()) {
                         Mpa mpa = new Mpa();
@@ -80,10 +78,9 @@ public class DbFilmStorage implements FilmStorage {
                     }
 
                     films.add(currentFilm);
-                    lastFilmId = filmId; // Обновляем запомненный ID
+                    lastFilmId = filmId;
                 }
 
-                // Добавляем жанр к текущему фильму (если он есть)
                 long genreId = rs.getLong("genre_id");
                 if (!rs.wasNull()) {
                     Genre genre = new Genre();
@@ -98,8 +95,6 @@ public class DbFilmStorage implements FilmStorage {
     }
 
     public Film getFilmById(Long id) {
-        // 1️⃣ Единый запрос с JOIN'ами для получения фильма + MPA + жанров
-        // Используем те же алиасы, что и в getAllFilms, для консистентности
         String query = """
                 SELECT 
                     f.id          AS film_id,
@@ -117,7 +112,7 @@ public class DbFilmStorage implements FilmStorage {
                 LEFT JOIN film_genre fg ON fg.film_id = f.id
                 LEFT JOIN genres g ON fg.genre_id = g.id
                 WHERE f.id = ?
-                ORDER BY g.id;  -- ⚠️ Сортируем жанры по ID, чтобы тесты проходили!
+                ORDER BY g.id; 
                 """;
 
         return jdbc.query(query, rs -> {
@@ -267,14 +262,14 @@ public class DbFilmStorage implements FilmStorage {
         return popularFilms;
     }
 
-    public Long getPopularPoint(Long film_id) {
+    public Long getPopularPoint(Long filmId) {
         String query = """
                 SELECT popular
                 FROM films
                 Where id = ?
                 """;
 
-        Long popular = jdbc.queryForObject(query, Long.class, film_id);
+        Long popular = jdbc.queryForObject(query, Long.class, filmId);
         return popular;
     }
 
