@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.exception.error;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,12 +24,10 @@ public class ErrorHandlingControllerAdvice {
             ConstraintViolationException e
     ) {
         final List<Violation> violations = e.getConstraintViolations().stream()
-                .map(
-                        violation -> new Violation(
-                                violation.getPropertyPath().toString(),
-                                violation.getMessage()
-                        )
-                )
+                .map(violation -> new Violation(
+                        violation.getPropertyPath().toString(),
+                        violation.getMessage()
+                ))
                 .collect(Collectors.toList());
         return new ValidationErrorResponse(violations);
     }
@@ -46,16 +45,16 @@ public class ErrorHandlingControllerAdvice {
     }
 
     @ExceptionHandler(ValidationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public ErrorResponse validationError(ValidationException e) {
-        return new ErrorResponse(e.getMessage());
+    public ResponseEntity<ErrorResponse> validationError(ValidationException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ResponseBody
-    public ErrorResponse notFoundException(NotFoundException e) {
-        return new ErrorResponse(e.getMessage());
+    public ResponseEntity<ErrorResponse> notFoundException(NotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)  // ← 404
+                .body(new ErrorResponse(e.getMessage()));
     }
 }

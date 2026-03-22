@@ -10,13 +10,9 @@ public interface FilmStorage {
 
     Film create(Film film);
 
-    Film delete(Film film);
-
     Film update(Film newFilm);
 
-    long getNextId();
-
-    Collection<Film> findAll();
+    Collection<Film> getAllFilms();
 
     Film getFilmById(Long filmId);
 
