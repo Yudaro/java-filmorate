@@ -71,36 +71,39 @@ public class DbUserStorage implements UserStorage {
     // Получаем пользователя по id
     public User getUserById(Long id) {
         String query = """
-                SELECT u.id, u.email, u.login, u.name, u.birthday, fs.friend_id
-                FROM users as u
-                LEFT JOIN friendship as fs on u.id = fs.user_id
-                WHERE id = ?
-                """;
-        try {
-            return jdbc.query(query, rs -> {
-                User user = null;
-                while (rs.next()) {
-                    if (user == null) {
-                        user = new User();
-                        user.setId(rs.getLong("id"));
-                        user.setEmail(rs.getString("email"));
-                        user.setLogin(rs.getString("login"));
-                        user.setName(rs.getString("name"));
-                        user.setBirthday(rs.getObject(("birthday"), LocalDate.class));
-                    }
+            SELECT u.id, u.email, u.login, u.name, u.birthday, fs.friend_id
+            FROM users as u
+            LEFT JOIN friendship as fs on u.id = fs.user_id
+            WHERE u.id = ?
+            """;
 
-                    long friendId = rs.getLong("friend_id");
-                    if (friendId != 0) {
-                        user.getFriends().add(friendId);
-                    }
+        User user = jdbc.query(query, rs -> {
+            User currentUser = null;
+
+            while (rs.next()) {
+                if (currentUser == null) {
+                    currentUser = new User();
+                    currentUser.setId(rs.getLong("id"));
+                    currentUser.setEmail(rs.getString("email"));
+                    currentUser.setLogin(rs.getString("login"));
+                    currentUser.setName(rs.getString("name"));
+                    currentUser.setBirthday(rs.getObject("birthday", LocalDate.class));
                 }
-                return user;
-            }, id);
-        } catch (EmptyResultDataAccessException e) {
+
+                long friendId = rs.getLong("friend_id");
+                if (!rs.wasNull()) {
+                    currentUser.getFriends().add(friendId);
+                }
+            }
+
+            return currentUser;
+        }, id);
+
+        if (user == null) {
             throw new NotFoundException("Пользователя с id - " + id + " не существует.");
-        } catch (IncorrectResultSizeDataAccessException e) {
-            throw new IllegalStateException("Найдено больше одной записи для id " + id);
         }
+
+        return user;
     }
 
     public User createUser(User user) {
@@ -191,7 +194,7 @@ public class DbUserStorage implements UserStorage {
             u.email,
             u.login,
             u.name,
-            u.birthday,
+            u.birthday
         FROM users u
         INNER JOIN friendship fs1 ON u.id = fs1.friend_id
         INNER JOIN friendship fs2 ON u.id = fs2.friend_id
