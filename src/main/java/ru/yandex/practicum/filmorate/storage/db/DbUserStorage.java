@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.storage.db;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
@@ -71,11 +70,11 @@ public class DbUserStorage implements UserStorage {
     // Получаем пользователя по id
     public User getUserById(Long id) {
         String query = """
-            SELECT u.id, u.email, u.login, u.name, u.birthday, fs.friend_id
-            FROM users as u
-            LEFT JOIN friendship as fs on u.id = fs.user_id
-            WHERE u.id = ?
-            """;
+                SELECT u.id, u.email, u.login, u.name, u.birthday, fs.friend_id
+                FROM users as u
+                LEFT JOIN friendship as fs on u.id = fs.user_id
+                WHERE u.id = ?
+                """;
 
         User user = jdbc.query(query, rs -> {
             User currentUser = null;
@@ -189,19 +188,19 @@ public class DbUserStorage implements UserStorage {
 
     public List<User> getCommonFriends(Long userId, Long otherUserId) {
         String query = """
-                SELECT
-            u.id,
-            u.email,
-            u.login,
-            u.name,
-            u.birthday
-        FROM users u
-        INNER JOIN friendship fs1 ON u.id = fs1.friend_id
-        INNER JOIN friendship fs2 ON u.id = fs2.friend_id
-        WHERE fs1.user_id = ?
-          AND fs2.user_id = ?
-        ORDER BY u.id
-        """;
+                        SELECT
+                    u.id,
+                    u.email,
+                    u.login,
+                    u.name,
+                    u.birthday
+                FROM users u
+                INNER JOIN friendship fs1 ON u.id = fs1.friend_id
+                INNER JOIN friendship fs2 ON u.id = fs2.friend_id
+                WHERE fs1.user_id = ?
+                  AND fs2.user_id = ?
+                ORDER BY u.id
+                """;
 
         getUserById(userId);
         getUserById(otherUserId);
