@@ -1,41 +1,31 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Null;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.validation.CreateGroup;
 import ru.yandex.practicum.filmorate.validation.UpdateGroup;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Data
 public class Film {
     @Null(message = "Поле id - должно быть пустым при создании.", groups = CreateGroup.class)
-    @NotBlank(message = "Поле id - не должно быть пустым при обновлении.", groups = UpdateGroup.class)
+    @NotNull(message = "Поле id - не должно быть пустым при обновлении.", groups = UpdateGroup.class)
     private Long id;
     @NotBlank(message = "name(название фильма) - не может быть пустым.")
     private String name;
+    @NotBlank(message = "description(описание) - не может быть пустым.", groups = UpdateGroup.class)
     @Size(max = 200, message = "description(описание фильма) - не должно содержать больше 200 символов.")
     private String description;
+    @NotNull(message = "releaseDate(дата выхода) - не может быть пустым.", groups = UpdateGroup.class)
     private LocalDate releaseDate;
+    @NotNull(message = "duration(продолжительность фильма) - не может быть пустым.", groups = UpdateGroup.class)
     @Positive(message = "duration(продолжительность фильма в минутых) - не может быть отрицательным или равна 0.")
     private Long duration;
+    private Mpa mpa;
     private Set<Long> likes = new HashSet<>();
-
-    public void likeFilm(Long userId) {
-        likes.add(userId);
-    }
-
-    public void deleteLike(Long userId) {
-        likes.remove(userId);
-    }
-
-    public Set<Long> getLikes() {
-        return Collections.unmodifiableSet(likes);
-    }
+    private Set<Genre> genres = new TreeSet<>(Comparator.comparingLong(Genre::getId));
+    @Null(message = "Поле popular - должно быть пустым при создании.", groups = CreateGroup.class)
+    private Long popular;
 }
